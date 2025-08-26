@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>React + Express Full-Stack ToDo Tutorial</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./tutorial.css">
+</head>
+<body>
+	<header class="app-header">
+		<div class="container">
+			<div class="header-row">
+				<div class="brand">
+					<span class="logo">✓</span>
+					<h1>Build a React ToDo App with a Modern Backend</h1>
+				</div>
+				<div class="header-actions">
+					<button id="darkModeToggle" class="btn btn-ghost" aria-label="Toggle dark mode">🌗</button>
+					<button id="resetProgress" class="btn btn-outline">Reset progress</button>
+				</div>
+			</div>
+			<p class="subtitle">React (Vite) + Tailwind CSS + Express API • Full CRUD • Unified dev workflow</p>
+			<div class="progress">
+				<div id="progressBar" class="progress-bar" style="width:0%"></div>
+			</div>
+		</div>
+	</header>
+
+	<div class="container layout">
+		<aside class="toc" aria-label="Table of contents">
+			<h2 class="toc-title">Contents</h2>
+			<nav>
+				<ol id="tocList" class="toc-list">
+					<li><a href="#objective">Objective</a></li>
+					<li><a href="#prerequisites">Prerequisites</a></li>
+					<li><a href="#tech">Tech & Structure</a></li>
+					<li><a href="#step-1">Step 1: Initialize the Project</a></li>
+					<li><a href="#step-2">Step 2: Build the Express API</a></li>
+					<li><a href="#step-3">Step 3: Set Up React + Tailwind</a></li>
+					<li><a href="#step-4">Step 4: Frontend Helpers & Components</a></li>
+					<li><a href="#step-5">Step 5: Run Together</a></li>
+					<li><a href="#step-6">Step 6: Test the API</a></li>
+					<li><a href="#notes">Styling Tips</a></li>
+					<li><a href="#pitfalls">Common Pitfalls</a></li>
+					<li><a href="#bonus">Bonus Ideas</a></li>
+					<li><a href="#appendix">Appendix</a></li>
+				</ol>
+			</nav>
+			<div class="checklist">
+				<h3 class="toc-title">Checklist</h3>
+				<ul id="checklist"></ul>
+			</div>
+		</aside>
+
+		<main class="content">
+			<section id="objective" class="card" data-step-id="objective">
+				<header class="card-header">
+					<h2>Objective</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="objective">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Build a full-stack "ToDo" app with a responsive React UI styled with Tailwind CSS and a Node.js/Express API providing full CRUD. Run frontend and backend together for a smooth dev workflow.</p>
+				<ul class="pill-list">
+					<li>Responsive React UI</li>
+					<li>Express REST API</li>
+					<li>Full CRUD</li>
+					<li>Unified dev workflow</li>
+				</ul>
+			</section>
+
+			<section id="prerequisites" class="card" data-step-id="prerequisites">
+				<header class="card-header">
+					<h2>Prerequisites</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="prerequisites">
+						<span>Done</span>
+					</label>
+				</header>
+				<ul>
+					<li>Node.js 18+ and npm/pnpm/yarn</li>
+					<li>Comfort with JavaScript (ES6+), React hooks (<code>useState</code>, <code>useEffect</code>), and CLI</li>
+				</ul>
+				<div class="quiz" data-quiz-id="q-prereq-1">
+					<h3>Quick Check: Which tool scaffolds the React app here?</h3>
+					<form>
+						<label><input type="radio" name="q1" value="cra"> Create React App</label>
+						<label><input type="radio" name="q1" value="vite" data-correct="true"> Vite</label>
+						<label><input type="radio" name="q1" value="next"> Next.js</label>
+						<label><input type="radio" name="q1" value="ng"> Angular CLI</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<section id="tech" class="card" data-step-id="tech">
+				<header class="card-header">
+					<h2>Tech Choices and Project Structure</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="tech">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>We use React via Vite, Tailwind CSS for styling, Express for the backend API, and <code>concurrently</code> to run both servers together.</p>
+				<pre class="code"><code>react_api_tutorial/
+  client/           # React (Vite)
+  server/           # Express API
+  package.json      # Root scripts to run both concurrently
+  README.md</code></pre>
+			</section>
+
+			<section id="step-1" class="card" data-step-id="step-1">
+				<header class="card-header">
+					<h2>Step 1: Initialize the Project</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="step-1">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Create the project, scaffold React with Vite, and prepare the backend folder with scripts.</p>
+				<div class="code-block">
+					<button class="copy" data-copy="#code-step-1">Copy</button>
+					<pre id="code-step-1" class="code"><code>mkdir -p react_api_tutorial && cd react_api_tutorial
+npm init -y
+npm create vite@latest client -- --template react
+mkdir server && cd server
+npm init -y
+npm i express cors uuid
+npm i -D nodemon
+npm pkg set scripts.start="node index.js"
+npm pkg set scripts.dev="nodemon --watch . --ext js,json --signal SIGINT index.js"
+cd ..
+npm i -D concurrently
+npm pkg set scripts.dev="concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\""</code></pre>
+				</div>
+				<div class="quiz" data-quiz-id="q-step-1-1">
+					<h3>Quick Check: Which package runs both servers together?</h3>
+					<form>
+						<label><input type="radio" name="q2" value="pm2"> pm2</label>
+						<label><input type="radio" name="q2" value="concurrently" data-correct="true"> concurrently</label>
+						<label><input type="radio" name="q2" value="nodemon"> nodemon</label>
+						<label><input type="radio" name="q2" value="forever"> forever</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+				<div class="problem" data-problem-id="p-step-1-1">
+					<h3>Problem: Root script to run both servers</h3>
+					<p>Type the exact npm command (from the root) that starts both servers.</p>
+					<form>
+						<input type="text" name="answer" placeholder="e.g. npm run dev" aria-label="Your answer">
+						<button type="submit" class="btn">Check</button>
+					</form>
+					<p class="problem-result" role="status" aria-live="polite" data-expected="npm run dev"></p>
+				</div>
+			</section>
+
+			<section id="step-2" class="card" data-step-id="step-2">
+				<header class="card-header">
+					<h2>Step 2: Build the Express API (Backend)</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="step-2">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Create <code>server/index.js</code> with a simple in-memory ToDo API and enable CORS/JSON parsing.</p>
+				<pre class="code"><code>// server/index.js
+const express = require('express');
+const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+
+app.use(cors());
+app.use(express.json());
+
+let todos = [
+  { id: uuidv4(), text: 'Learn React', completed: false },
+  { id: uuidv4(), text: 'Build a ToDo app', completed: true },
+];
+
+app.get('/api/todos', (req, res) => { res.json(todos); });
+app.post('/api/todos', (req, res) => {
+  const { text } = req.body;
+  if (!text || !text.trim()) return res.status(400).json({ message: 'Text is required' });
+  const newTodo = { id: uuidv4(), text: text.trim(), completed: false };
+  todos.unshift(newTodo);
+  res.status(201).json(newTodo);
+});
+app.put('/api/todos/:id', (req, res) => {
+  const { id } = req.params;
+  const { text, completed } = req.body;
+  const idx = todos.findIndex(t => t.id === id);
+  if (idx === -1) return res.status(404).json({ message: 'Not found' });
+  if (typeof text !== 'undefined') {
+    const newText = String(text).trim();
+    if (!newText) return res.status(400).json({ message: 'Text cannot be empty' });
+    todos[idx].text = newText;
+  }
+  if (typeof completed !== 'undefined') todos[idx].completed = Boolean(completed);
+  res.json(todos[idx]);
+});
+app.delete('/api/todos/:id', (req, res) => {
+  const { id } = req.params;
+  const before = todos.length;
+  todos = todos.filter(t => t.id !== id);
+  if (todos.length === before) return res.status(404).json({ message: 'Not found' });
+  res.status(204).send();
+});
+
+app.listen(PORT, () => console.log(`API listening on http://localhost:${PORT}`));</code></pre>
+				<div class="quiz" data-quiz-id="q-step-2-1">
+					<h3>Quick Check: Which port does the API use by default?</h3>
+					<form>
+						<label><input type="radio" name="q3" value="3000"> 3000</label>
+						<label><input type="radio" name="q3" value="5173"> 5173</label>
+						<label><input type="radio" name="q3" value="4000" data-correct="true"> 4000</label>
+						<label><input type="radio" name="q3" value="8080"> 8080</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+				<div class="quiz" data-quiz-id="q-step-2-2">
+					<h3>Quick Check: Which middleware enables JSON body parsing?</h3>
+					<form>
+						<label><input type="radio" name="q4" value="body"> body-parser</label>
+						<label><input type="radio" name="q4" value="json" data-correct="true"> express.json()</label>
+						<label><input type="radio" name="q4" value="url"> express.urlencoded()</label>
+						<label><input type="radio" name="q4" value="none"> None</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<section id="step-3" class="card" data-step-id="step-3">
+				<header class="card-header">
+					<h2>Step 3: Set Up React + Tailwind (Frontend)</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="step-3">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Install React deps, axios, and Tailwind with PostCSS + Autoprefixer. Update content paths and import Tailwind directives.</p>
+				<pre class="code"><code>cd client
+npm i
+npm i axios
+npm i -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p</code></pre>
+				<div class="quiz" data-quiz-id="q-step-3-1">
+					<h3>Quick Check: Which trio installs Tailwind correctly?</h3>
+					<form>
+						<label><input type="radio" name="q5" value="tw"> tailwindcss postcss autoprefixer</label>
+						<label><input type="radio" name="q5" value="twc" data-correct="true"> tailwindcss postcss autoprefixer (as dev deps)</label>
+						<label><input type="radio" name="q5" value="bs"> bootstrap sass postcss</label>
+						<label><input type="radio" name="q5" value="mui"> @mui/material</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<section id="step-4" class="card" data-step-id="step-4">
+				<header class="card-header">
+					<h2>Step 4: Frontend API Helper and Components</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="step-4">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Create an axios helper and components: <code>AddTodoForm</code>, <code>TodoItem</code>, and <code>TodoList</code>. Wire them in <code>App.jsx</code>.</p>
+				<div class="code-block">
+					<button class="copy" data-copy="#code-step-4-api">Copy</button>
+					<pre id="code-step-4-api" class="code"><code>// client/src/api.js
+import axios from 'axios';
+export const api = axios.create({ baseURL: 'http://localhost:4000/api' });
+export async function fetchTodos(){ const { data } = await api.get('/todos'); return data; }
+export async function createTodo(text){ const { data } = await api.post('/todos', { text }); return data; }
+export async function updateTodo(id, payload){ const { data } = await api.put(`/todos/${id}`, payload); return data; }
+export async function deleteTodo(id){ await api.delete(`/todos/${id}`); }</code></pre>
+				</div>
+				<div class="quiz" data-quiz-id="q-step-4-1">
+					<h3>Quick Check: What is the axios base URL?</h3>
+					<form>
+						<label><input type="radio" name="q6" value="3000"> http://localhost:3000/api</label>
+						<label><input type="radio" name="q6" value="5173"> http://localhost:5173/api</label>
+						<label><input type="radio" name="q6" value="4000" data-correct="true"> http://localhost:4000/api</label>
+						<label><input type="radio" name="q6" value="relative"> /api</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+				<div class="quiz" data-quiz-id="q-step-4-2">
+					<h3>Quick Check: Which method updates completion?</h3>
+					<form>
+						<label><input type="radio" name="q7" value="get"> GET /api/todos/:id</label>
+						<label><input type="radio" name="q7" value="post"> POST /api/todos</label>
+						<label><input type="radio" name="q7" value="put" data-correct="true"> PUT /api/todos/:id</label>
+						<label><input type="radio" name="q7" value="delete"> DELETE /api/todos/:id</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<section id="step-5" class="card" data-step-id="step-5">
+				<header class="card-header">
+					<h2>Step 5: Run Frontend and Backend Together</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="step-5">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Use the root script to start both servers or run them separately.</p>
+				<pre class="code"><code>npm run dev
+# Or separately:
+npm --prefix server run dev
+npm --prefix client run dev</code></pre>
+				<div class="quiz" data-quiz-id="q-step-5-1">
+					<h3>Quick Check: Which command runs both servers?</h3>
+					<form>
+						<label><input type="radio" name="q8" value="server"> npm --prefix server run dev</label>
+						<label><input type="radio" name="q8" value="client"> npm --prefix client run dev</label>
+						<label><input type="radio" name="q8" value="root" data-correct="true"> npm run dev</label>
+						<label><input type="radio" name="q8" value="start"> npm start</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<section id="step-6" class="card" data-step-id="step-6">
+				<header class="card-header">
+					<h2>Step 6: Testing the API Manually (Optional)</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="step-6">
+						<span>Done</span>
+					</label>
+				</header>
+				<p>Use curl to list, create, toggle and delete todos.</p>
+				<pre class="code"><code>curl -s http://localhost:4000/api/todos | jq
+curl -s -X POST http://localhost:4000/api/todos \
+  -H 'Content-Type: application/json' \
+  -d '{"text":"Write documentation"}' | jq
+curl -s -X PUT http://localhost:4000/api/todos/REPLACE_ID \
+  -H 'Content-Type: application/json' \
+  -d '{"completed": true}' | jq
+curl -s -X DELETE http://localhost:4000/api/todos/REPLACE_ID -i</code></pre>
+			</section>
+
+			<section id="notes" class="card" data-step-id="notes">
+				<header class="card-header">
+					<h2>Styling Notes and Tailwind Tips</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="notes">
+						<span>Done</span>
+					</label>
+				</header>
+				<ul>
+					<li>Use <code>container mx-auto max-w-xl</code> for centered layouts</li>
+					<li>Use <code>space-y-*</code> for vertical spacing</li>
+					<li>Use conditional classes like <code>line-through text-gray-400</code></li>
+				</ul>
+			</section>
+
+			<section id="pitfalls" class="card" data-step-id="pitfalls">
+				<header class="card-header">
+					<h2>Common Pitfalls and Fixes</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="pitfalls">
+						<span>Done</span>
+					</label>
+				</header>
+				<ul>
+					<li>CORS errors → ensure <code>cors()</code> middleware and correct base URL</li>
+					<li>Port conflicts → switch ports or stop the conflicting process</li>
+					<li>Empty text validation → API returns 400 if <code>text</code> is empty</li>
+				</ul>
+				<div class="quiz" data-quiz-id="q-pit-1">
+					<h3>Quick Check: Which package handles CORS?</h3>
+					<form>
+						<label><input type="radio" name="q9" value="helmet"> helmet</label>
+						<label><input type="radio" name="q9" value="cors" data-correct="true"> cors</label>
+						<label><input type="radio" name="q9" value="morgan"> morgan</label>
+						<label><input type="radio" name="q9" value="dotenv"> dotenv</label>
+						<button type="submit" class="btn">Check answer</button>
+					</form>
+					<p class="quiz-result" role="status" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<section id="bonus" class="card" data-step-id="bonus">
+				<header class="card-header">
+					<h2>Bonus Features (Ideas)</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="bonus">
+						<span>Done</span>
+					</label>
+				</header>
+				<ul>
+					<li>Edit ToDos inline and send PUT with new text</li>
+					<li>Filters for All / Active / Completed</li>
+					<li>Persistence with a real database (MongoDB/PostgreSQL)</li>
+					<li>Auth with JWT and per-user todos</li>
+				</ul>
+			</section>
+
+			<section id="appendix" class="card" data-step-id="appendix">
+				<header class="card-header">
+					<h2>Appendix: Express Endpoint Summary</h2>
+					<label class="done-toggle">
+						<input type="checkbox" data-done="appendix">
+						<span>Done</span>
+					</label>
+				</header>
+				<ul class="endpoint-list">
+					<li><code>GET /api/todos</code> → list all todos</li>
+					<li><code>POST /api/todos</code> → create { text }</li>
+					<li><code>PUT /api/todos/:id</code> → update { text?, completed? }</li>
+					<li><code>DELETE /api/todos/:id</code> → remove a todo</li>
+				</ul>
+			</section>
+		</main>
+	</div>
+
+	<footer class="app-footer">
+		<div class="container">
+			<p>You now have a complete, modern full-stack ToDo app. Experiment with bonus features!</p>
+		</div>
+	</footer>
+
+	<script src="./tutorial.js"></script>
+</body>
+</html>

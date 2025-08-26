@@ -1,0 +1,69 @@
+:root{--bg:#0b1020;--panel:#11182a;--panel-2:#0d1426;--text:#e6ecff;--muted:#a2b0d3;--brand:#6ea8fe;--brand-2:#3b82f6;--success:#22c55e;--warn:#f59e0b;--danger:#ef4444;--border:rgba(255,255,255,.08);--code:#0a0f1f;--shadow:0 6px 24px rgba(0,0,0,.35)}
+/* Light theme overrides */
+.light{--bg:#f4f7ff;--panel:#ffffff;--panel-2:#eef2ff;--text:#0b1020;--muted:#4b5563;--brand:#3b82f6;--brand-2:#2563eb;--success:#16a34a;--warn:#d97706;--danger:#dc2626;--border:rgba(0,0,0,.08);--code:#f3f4f6;--shadow:0 6px 24px rgba(0,0,0,.12)}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;line-height:1.6;background:linear-gradient(180deg,var(--bg), var(--panel-2) 50%, var(--bg));color:var(--text)}
+
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+.app-header{position:sticky;top:0;z-index:20;background:color-mix(in oklab, var(--bg) 85%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-row{display:flex;align-items:center;gap:16px;justify-content:space-between;padding:18px 0}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:white;font-weight:700;box-shadow:var(--shadow)}
+.header-actions{display:flex;gap:10px}
+.subtitle{margin:0 0 12px;color:var(--muted)}
+.progress{height:10px;border-radius:999px;background:color-mix(in oklab, var(--panel) 70%, white 5%);overflow:hidden;border:1px solid var(--border)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-2));width:0%;transition:width .3s ease}
+
+.layout{display:grid;grid-template-columns:280px 1fr;gap:24px;padding:28px 0}
+.toc{position:sticky;top:90px;height:calc(100vh - 110px);overflow:auto;padding-right:6px}
+.toc-title{margin:0 0 10px;color:var(--muted);font-size:.95rem}
+.toc-list{list-style:none;margin:0;padding:0}
+.toc-list li{margin:6px 0}
+.toc a{display:block;padding:8px 10px;border-radius:8px;color:var(--text);text-decoration:none;border:1px solid transparent}
+.toc a:hover{background:color-mix(in oklab, var(--panel) 85%, white 5%);border-color:var(--border)}
+.checklist{margin-top:20px;padding-top:16px;border-top:1px dashed var(--border)}
+.checklist ul{list-style:none;margin:0;padding:0}
+.checklist li{display:flex;align-items:center;gap:8px;margin:6px 0;color:var(--muted)}
+
+.content{display:flex;flex-direction:column;gap:18px}
+.card{background:linear-gradient(180deg, color-mix(in oklab, var(--panel) 92%, transparent), color-mix(in oklab, var(--panel-2) 95%, transparent));border:1px solid var(--border);border-radius:14px;padding:18px 18px 12px;box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.card h2{margin:0}
+
+.pill-list{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:10px 0 0;list-style:none}
+.pill-list li{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:color-mix(in oklab, var(--panel) 92%, transparent)}
+
+.code{background:var(--code);color:#0b1020;border:1px solid var(--border);border-radius:10px;padding:14px;overflow:auto;line-height:1.5}
+.light .code{color:#0b1020}
+.code-block{position:relative}
+.code-block .copy{position:absolute;top:8px;right:8px}
+
+.btn{appearance:none;border:1px solid transparent;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));padding:8px 12px;color:white;font-weight:600;cursor:pointer;box-shadow:var(--shadow)}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:translateY(1px)}
+.btn-outline{background:transparent;border-color:var(--border);color:var(--text)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text)}
+
+.quiz, .problem{margin-top:14px;padding:14px;border-radius:10px;background:color-mix(in oklab, var(--panel) 92%, transparent);border:1px dashed var(--border)}
+.quiz h3,.problem h3{margin-top:0}
+.quiz form, .problem form{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.quiz label{display:flex;gap:8px;align-items:center;background:color-mix(in oklab, var(--panel) 92%, transparent);border:1px solid var(--border);padding:6px 10px;border-radius:999px}
+.quiz-result,.problem-result{margin:8px 0 0}
+.quiz-result.ok,.problem-result.ok{color:var(--success)}
+.quiz-result.no,.problem-result.no{color:var(--danger)}
+
+.done-toggle{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted)}
+.done-toggle input{width:16px;height:16px}
+
+.endpoint-list{padding-left:18px}
+.endpoint-list li{margin:6px 0}
+
+.app-footer{margin-top:30px;padding:26px 0;border-top:1px solid var(--border);color:var(--muted)}
+
+/* Responsive */
+@media (max-width: 1024px){
+	.layout{grid-template-columns:1fr}
+	.toc{position:relative;top:0;height:auto}
+}
